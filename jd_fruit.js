@@ -739,7 +739,7 @@ async function executeWaterRains() {
       if (Date.now() < ($.farmTask.waterRainInit.lastTime + 3 * 60 * 60 * 1000)) {
         executeWaterRain = false;
         // message += `【第${$.farmTask.waterRainInit.winTimes + 1}次水滴雨】未到时间，请${new Date($.farmTask.waterRainInit.lastTime + 3 * 60 * 60 * 1000).toLocaleTimeString()}再试\n`;
-        console.log(`\`【第${$.farmTask.waterRainInit.winTimes + 1}次水滴雨】未到时间，请${new Date($.farmTask.waterRainInit.lastTime + 3 * 60 * 60 * 1000).toLocaleTimeString()}再试\n`);
+        console.log(`【第${$.farmTask.waterRainInit.winTimes + 1}次水滴雨】未到时间，请${new Date($.farmTask.waterRainInit.lastTime + 3 * 60 * 60 * 1000).toLocaleTimeString()}再试\n`);
       }
     }
     if (executeWaterRain) {
@@ -1100,11 +1100,15 @@ async function masterGotFinishedTaskForFarm() {
 }
 //助力好友信息API
 async function masterHelpTaskInitForFarm() {
+  await $.wait(3000);
+  console.log('等待了3秒');
   const functionId = arguments.callee.name.toString();
   $.masterHelpResult = await request(functionId);
 }
 //新版助力好友信息API
 async function farmAssistInit() {
+  await $.wait(3000);
+  console.log('等待了3秒');
   const functionId = arguments.callee.name.toString();
   $.farmAssistResult = await request(functionId, {"version":14,"channel":1,"babelChannel":"120"});
 }
