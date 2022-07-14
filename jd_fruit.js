@@ -417,6 +417,7 @@ async function doTenWaterAgain() {
     console.log("目前剩余水滴：【" + totalEnergy + "】g，可继续浇水");
     isFruitFinished = false;
     for (let i = 0; i < parseInt(overageEnergy / 10); i++) {
+      await $.wait(2000);
       await waterGoodForFarm();
       console.log(`本次浇水结果:   ${JSON.stringify($.waterResult)}`);
       if ($.waterResult.code === '0') {
