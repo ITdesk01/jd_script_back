@@ -34,7 +34,7 @@ let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, n
 let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
 ]
 let message = '', subTitle = '', option = {}, isFruitFinished = false;
-const retainWater = 20000;//保留水滴大于多少g,默认100g;
+const retainWater = 100;//保留水滴大于多少g,默认100g;
 let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
 let jdFruitBeanCard = false;//农场使用水滴换豆卡(如果出现限时活动时100g水换20豆,此时比浇水划算,推荐换豆),true表示换豆(不浇水),false表示不换豆(继续浇水),脚本默认是浇水
 let randomCount = 0;
@@ -400,10 +400,22 @@ async function doTenWaterAgain() {
   if (totalEnergy >= ($.farmInfo.farmUserPro.treeTotalEnergy - $.farmInfo.farmUserPro.treeEnergy)) {
     //如果现有的水滴，大于水果可兑换所需的对滴(也就是把水滴浇完，水果就能兑换了)
     isFruitFinished = false;
-
-  for (let i = 0; i < ($.farmInfo.farmUserPro.treeTotalEnergy - $.farmInfo.farmUserPro.treeEnergy) / 10; i++) {
-      //await waterGoodForFarm();
+    for (let i = 0; i < ($.farmInfo.farmUserPro.treeTotalEnergy - $.farmInfo.farmUserPro.treeEnergy) / 10; i++) {
+      await waterGoodForFarm();
       console.log(`本次浇水结果(水果马上就可兑换了):   ${JSON.stringify($.waterResult)}`);
+      if ($.waterResult.code === '0') {
+        console.log('\n浇水10g成功\n');
+        if ($.waterResult.finished) {
+          // 已证实，waterResult.finished为true，表示水果可以去领取兑换了
+          isFruitFinished = true;
+          break
+        } else {
+          console.log(`目前水滴【${$.waterResult.totalEnergy}】g,继续浇水，水果马上就可以兑换了`)
+        }
+      } else {
+        console.log('浇水出现失败异常,跳出不在继续浇水')
+        break;
+      }
     }
     if (isFruitFinished) {
       option['open-url'] = urlSchema;
@@ -417,7 +429,6 @@ async function doTenWaterAgain() {
     console.log("目前剩余水滴：【" + totalEnergy + "】g，可继续浇水");
     isFruitFinished = false;
     for (let i = 0; i < parseInt(overageEnergy / 10); i++) {
-      await $.wait(2000);
       await waterGoodForFarm();
       console.log(`本次浇水结果:   ${JSON.stringify($.waterResult)}`);
       if ($.waterResult.code === '0') {
