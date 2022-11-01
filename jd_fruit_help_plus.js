@@ -434,16 +434,7 @@ async function doTenWaterAgain() {
         }
     }
 */
-     if (totalEnergy > 100 && $.myCardInfoRes.fastCard > 0) {
-       //使用快速浇水卡
-       await userMyCardForFarm('fastCard');
-       console.log(`使用快速浇水卡结果:${JSON.stringify($.userMyCardRes)}`);
-       if ($.userMyCardRes.code === '0') {
-         console.log(`已使用快速浇水卡浇水${$.userMyCardRes.waterEnergy}g`);
-       }
-       await initForFarm();
-       totalEnergy  = $.farmInfo.farmUserPro.totalEnergy;
-     }
+     
     // 所有的浇水(10次浇水)任务，获取水滴任务完成后，如果剩余水滴大于等于60g,则继续浇水(保留部分水滴是用于完成第二天的浇水10次的任务)
   if (totalEnergy < retainWater) {
     console.log('保留水滴不足,停止继续浇水')
@@ -454,6 +445,16 @@ async function doTenWaterAgain() {
         //如果现有的水滴，大于水果可兑换所需的对滴(也就是把水滴浇完，水果就能兑换了)
         isFruitFinished = false;
         for (let i = 0; i < ($.farmInfo.farmUserPro.treeTotalEnergy - $.farmInfo.farmUserPro.treeEnergy) / 10; i++) {
+	    if (totalEnergy > 100 && $.myCardInfoRes.fastCard > 0) {
+       //使用快速浇水卡
+       await userMyCardForFarm('fastCard');
+       console.log(`使用快速浇水卡结果:${JSON.stringify($.userMyCardRes)}`);
+       if ($.userMyCardRes.code === '0') {
+         console.log(`已使用快速浇水卡浇水${$.userMyCardRes.waterEnergy}g`);
+       }
+       await initForFarm();
+       totalEnergy  = $.farmInfo.farmUserPro.totalEnergy;
+     }	
             await waterGoodForFarm();
             console.log(`本次浇水结果(水果马上就可兑换了):   ${JSON.stringify($.waterResult)}`);
             if ($.waterResult.code === '0') {
