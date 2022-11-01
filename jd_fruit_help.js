@@ -34,11 +34,8 @@ let cookiesArr = [],
 //此此内容是IOS用户下载脚本到本地使用，填写互助码的地方，同一京东账号的好友互助码请使用@符号隔开。
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
-    //     //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-    //     '5853550f71014282912b76d95beb84c0@b58ddba3317b44ceb0ac86ea8952998c@8d724eb95e3847b6a1526587d1836f27@a80b7d1db41a4381b742232da9d22443@ce107b8f64d24f62a92292180f764018@c73ea563a77d4464b273503d3838fec1@0dd9a7fd1feb449fb1bf854a3ec0e801',
-    //     //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-    //     '5853550f71014282912b76d95beb84c0@b58ddba3317b44ceb0ac86ea8952998c@8d724eb95e3847b6a1526587d1836f27@a80b7d1db41a4381b742232da9d22443@ce107b8f64d24f62a92292180f764018@c73ea563a77d4464b273503d3838fec1@0dd9a7fd1feb449fb1bf854a3ec0e801',
-]
+
+];
 let newShareCodes=[];
 let message = '',
     subTitle = '',
@@ -95,32 +92,14 @@ let NoNeedCodes = [];
               message = '';
               subTitle = '';
               option = {};
-							$.UA = require('./USER_AGENTS').UARAM();
+	      $.UA = require('./USER_AGENTS');
               $.retry = 0;
-							llgetshare = false;
-										await GetCollect();
-							if(llgetshare){
-								await $.wait(5000);
-								lnrun++;				  
-							}
-							if(lnrun == 10){
-								console.log(`\n【访问接口次数达到10次，休息一分钟.....】\n`);
-								await $.wait(60*1000);
-								lnrun = 0;
-							}
+	      llgetshare = false;
+		//await GetCollect();
+	      await shareCodesFormat();
           }
       }
-      if (boolneedUpdate) {
-          var str = JSON.stringify(TempShareCache, null, 2);
-          fs.writeFile(strShare, str, function (err) {
-              if (err) {
-                  console.log(err);
-                  console.log("\n【缓存文件Fruit_ShareCache.json更新失败!】\n");
-              } else {
-                  console.log("\n【缓存文件Fruit_ShareCache.json更新成功!】\n");
-              }
-          })
-      }
+      
   }
   console.log('\n【互助码已经收集完毕，现在开始账号内部互助，请稍等...】\n');
     for (let i = 0; i < cookiesArr.length; i++) {
@@ -143,7 +122,7 @@ let NoNeedCodes = [];
             message = '';
             subTitle = '';
             option = {};
-						$.UA = require('./USER_AGENTS').UARAM();
+						$.UA = require('./USER_AGENTS');
             $.retry = 0;
 						lnrun++;
 						await jdFruit();
@@ -397,6 +376,22 @@ async function GetCollect() {
     } catch (e) {
         $.logErr(e);
     }
+}
+
+function shareCodesFormat() {
+  return new Promise(async resolve => {
+    // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
+    newShareCodes = [];
+    if ($.shareCodesArr[$.index - 1]) {
+      newShareCodes = $.shareCodesArr[$.index - 1].split('@');
+    } else {
+      console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`)
+      const tempIndex = $.index > shareCodes.length ? (shareCodes.length - 1) : ($.index - 1);
+      newShareCodes = shareCodes[tempIndex].split('@');
+    }
+    console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify(newShareCodes)}`)
+    resolve();
+  })
 }
 
 // ========================API调用接口========================
