@@ -76,7 +76,7 @@ let llgetshare = false;
               message = '';
               subTitle = '';
               option = {};
-							$.UA = require('./USER_AGENTS').UARAM();
+							$.UA = require('./USER_AGENTS');
               $.retry = 0;
 							llgetshare = false;
 										await GetCollect();
